@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://fb.me/react-with-addons-15.1.0.js"></script>
+    <script src="https://fb.me/react-dom-15.1.0.js"></script>
+  </head>
+
+  <body>
+    <div id="example"></div>
+    <script>
+      import React, { Component } from 'react';
+
+// Define the HelloWorld component.
+// It takes two props: name and date
+class HelloWorld extends React {
+  render() {
+    // The JSX lines below are converted into ES5 javascript,
+    // making calls to React.createElement
+    return (
+      <p>
+        Hello, {this.props.name}!
+        <br />
+        It is {this.props.date.toTimeString()}
+      </p>
+    );
+  }
+}
+
+// Use setInterval to re-render the HelloWorld component
+// every 500ms into <div id="example"></div>
+setInterval(function() {
+  ReactDOM.render(
+    <HelloWorld date={new Date()} name="Lighthouse" />,
+    document.getElementById('example')
+  );
+}, 500);
+    </script>
+  </body>
+</html>
