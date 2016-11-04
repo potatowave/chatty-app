@@ -28,3 +28,9 @@ h1 {
     }
     footer #username { flex: 3; }
     footer #new-message { flex: 7; }
+    .userCount {
+      position: relative;
+      margin-top: 0px;
+      float: right;
+      line-height: 0px;
+    }

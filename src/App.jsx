@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
+const uuid = require('node-uuid');
 
+var socket = new WebSocket("ws://localhost:4000");
 
 class App extends Component {
 
@@ -10,60 +12,104 @@ class App extends Component {
     console.log("Rendering constructor")
     super(props);
     this.state = {
-      currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-      messages: [
-        {
-          username: "Bob",
-          key: "1",
-          content: "Has anyone seen my marbles?",
-        },
-        {
-          username: "Anonymous",
-          key: "2",
-          content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-        }
-      ]
+      currentUser: {name: 'Bob'}, // optional. if currentUser is not defined, it means the user is Anonymous
+      messages: [],
+      usercount: 0,
+      usercolor: 'black'
     }
 
+    this.addMessage = this.addMessage.bind(this);
+    this.updateCurrentUser = this.updateCurrentUser.bind(this);
   }
 
   addMessage(text) {
-      const newMessage = {key: this.state.message.length , username: this.state.currentUser.name , content: text};
-      console.log(newMessage)
+
+      const newMessage = {key: uuid.v1(), username: this.state.currentUser.name, content: text, type: 'postMessage', color: this.state.usercolor };
+      debugger;
+      const messages = this.state.messages.concat(newMessage);
+
+      socket.send(JSON.stringify(newMessage), () => {
+        this.setState(JSON.stringify({messages: messages}))
+      });
+
+  }
+
+  updateCurrentUser(user) {
+
+    console.log("Input:", user);
+
+    console.log("before", this.state.currentUser);
+
+    this.setState({currentUser: {name: user}})
+
+    console.log("after", this.state.currentUser);
+
+    let updatedCurrentUser = { newUsername: user , oldUsername: this.state.currentUser.name, type: 'postNotification', key: uuid.v1() };
+
+    socket.send(JSON.stringify(updatedCurrentUser), () => {
+      this.setState({currentUser: {name: user}})
+    });
+
   }
 
   render() {
 
     console.log("Rendering App")
-
     return (
       <div>
         <div className="wrapper">
           <nav>
             <h1>Chatty</h1>
+            <div className="userCount">Users Online: { this.state.usercount }</div>
           </nav>
-          <MessageList messages={this.state.messages} >
-          </MessageList>
-          <ChatBar currentUser={this.state.currentUser.name} messages={this.state.messages} >
-          </ChatBar>
+
+          <MessageList messages={this.state.messages} color={this.state.color} />
+          <ChatBar  currentUser={this.state.currentUser.name}
+                    addMessage={this.addMessage}
+                    updateCurrentUser={this.updateCurrentUser} />
         </div>
       </div>
     );
   }
 
     componentDidMount() {
+
     console.log("componentDidMount <App />");
-    setTimeout(() => {
-      console.log("Simulating incoming message");
-      // Add a new message to the list of messages in the data store
-      const newMessage = {key: 3, username: "Michelle", content: "Hello there!"};
-      const messages = this.state.messages.concat(newMessage)
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      console.log(messages)
-      this.setState({messages: messages})
-    }, 3000);
+
+    socket.onmessage = (event) => {
+
+      event = JSON.parse(event.data)
+
+      switch(event.type) {
+        case "color":
+          const userColor = event;
+          this.setState({usercolor: userColor.data});
+        case "incomingMessage":
+          const newMessage = event;
+          const messages = this.state.messages.concat(newMessage)
+          this.setState({messages: messages})
+          break;
+        case "incomingNotification":
+          const newNotification = event;
+          const notification = this.state.messages.concat(newNotification)
+          this.setState({messages: notification})
+          break;
+        case "userCount":
+          const userCount = event;
+          this.setState({usercount: userCount.data.userCount})
+          console.log(userCount.data.userCount);
+          break;
+        default:
+          // show an error in the console if the message type is unknown
+          throw new Error("Unknown event type " + event.type);
+    }
+
+    }
+
   }
+
+
+
 }
 
 export default App;

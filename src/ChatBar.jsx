@@ -1,55 +1,68 @@
 import React, {Component} from 'react';
 
-function textEntered(text) {
-
-  // when the user types some text then presses enter
-  // this function calls the app component
-
-}
-
-function onSubmit() {
-  alert("Test")
-}
-
 class ChatBar extends React.Component {
 
   constructor(props) {
+
     super(props);
-    this.state = {value: ''};
+    this.state = {value: '', username: props.currentUser};
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleEnter = this.handleEnter.bind(this);
+    this.handleUserChange = this.handleUserChange.bind(this);
+    this.handleMessageEnter = this.handleMessageEnter.bind(this);
+    this.handleUserEnter = this.handleUserEnter.bind(this);
+
   }
 
   handleChange(event) {
-    this.setState({value: event.target.value});
+
+    this.setState({
+      value: event.target.value
+    });
+
   }
 
-  handleSubmit(event) {
-    alert('Text field value is: ' + this.state.value);
+  handleUserChange(event) {
+
+    console.log(this.props.currentUser)
+
+    this.setState({
+      username: event.target.value
+    });
+
   }
 
-  handleEnter(key) {
-    if (key.which === 13) {
+  handleMessageEnter(event) {
+
+    if (event.which === 13) {
       // key.target targets value
-      console.log("enter ", this.props);
-      //this.props.addMessage(key.target.value);
+      this.props.addMessage(event.target.value)
+      this.setState({value: ''});
 
     }
   }
+
+  handleUserEnter(event) {
+
+    if (event.which === 13) {
+      this.props.updateCurrentUser(event.target.value)
+    }
+  }
+
+
 
   render() {
 
     return (
       <footer>
 
-          <input id="username" type="text" placeholder="Your Name (Optional)" value={ this.props.currentUser } />
-          <input id="new-message" type="text" placeholder="Type a message and hit ENTER" value={this.state.value} onChange={this.handleChange} onKeyUp={this.handleEnter} />
+          <input id="username" type="text" placeholder="Your Name (Optional)" value={this.state.username} onChange={this.handleUserChange} onKeyUp={this.handleUserEnter} />
+          <input id="new-message" type="text" placeholder="Type a message and hit ENTER" value={this.state.value} onChange={this.handleChange} onKeyUp={this.handleMessageEnter} />
 
       </footer>
     );
 
   }
+
 }
 
 export default ChatBar;
