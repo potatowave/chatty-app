@@ -1,16 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 class Message extends React.Component {
 
   render() {
+    console.log('Rendering Notication');
 
-    console.log("Rendering Notication")
-
-    console.log(this.props)
+    console.log(this.props);
 
     return (
-
-
 
       <div>
         <div className="message system">
@@ -20,7 +17,6 @@ class Message extends React.Component {
       </div>
 
     );
-
   }
 
 }
