@@ -9,7 +9,6 @@ const socket = new WebSocket('ws://localhost:4000');
 class App extends Component {
 
   constructor(props) {
-    console.log('Rendering constructor');
     super(props);
     this.state = {
       currentUser: { name: 'Bob' }, // optional. if currentUser is not defined, it means the user is Anonymous
@@ -23,8 +22,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount <App />');
-
     socket.onmessage = (event) => {
       const eventData = JSON.parse(event.data);
 
@@ -80,13 +77,7 @@ class App extends Component {
   }
 
   updateCurrentUser(user) {
-    console.log('Input:', user);
-
-    console.log('before', this.state.currentUser);
-
     this.setState({ currentUser: { name: user } });
-
-    console.log('after', this.state.currentUser);
 
     const updatedCurrentUser = {
       newUsername: user,
@@ -101,7 +92,6 @@ class App extends Component {
   }
 
   render() {
-    console.log('Rendering App');
     return (
       <div>
         <div className="wrapper">

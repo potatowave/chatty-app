@@ -20,7 +20,7 @@ let userCount = 0;
 function getRandomColor() {
   const letters = '0123456789ABCDEF';
   let color = '#';
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 6; i += 1) {
     color += letters[Math.floor(Math.random() * 16)];
   }
   return color;
@@ -31,17 +31,16 @@ function getRandomColor() {
 // the ws parameter in the callback.
 
 wss.on('connection', (ws) => {
-  console.log('Client connected');
+  //console.log('Client connected');
 
   const userColor = getRandomColor();
-  console.log(userColor);
 
   ws.send(JSON.stringify({ type: 'color', data: userColor }));
 
   userCount += 1;
 
   ws.on('message', (message) => {
-    console.log('Message received:', message);
+    //console.log('Message received:');
     const messageParsed = JSON.parse(message);
 
     if (messageParsed.type === 'postMessage') {
@@ -55,7 +54,7 @@ wss.on('connection', (ws) => {
         client.send(JSON.stringify(messageParsed));
       });
     } else {
-      console.log('Received unknown message: ', messageParsed);
+      //console.log('Received unknown message.');
     }
   });
 
@@ -64,7 +63,7 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
     userCount -= 1;
-    console.log('Client disconnected');
+    //console.log('Client disconnected');
   });
   wss.broadcast(JSON.stringify({
     type: 'userCount',

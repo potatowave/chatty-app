@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 class Message extends React.Component {
 
   render() {
-    console.log('Rendering Message');
-
     if (/(https?:\/\/.*\.(?:png|jpg|gif))/i.exec(this.props.content)) {
       return (
 
