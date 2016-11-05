@@ -32,7 +32,7 @@ class App extends Component {
         case 'color': {
           const userColor = eventData;
           this.setState({ usercolor: userColor.data });
-          // Intentional no break.
+          break;
         }
 
         case 'incomingMessage': {
@@ -115,9 +115,11 @@ class App extends Component {
             currentUser={this.state.currentUser.name}
             addMessage={this.addMessage}
             updateCurrentUser={this.updateCurrentUser}
+            color={this.state.usercolor}
           />
         </div>
       </div>
+
     );
   }
 

@@ -18,8 +18,6 @@ class ChatBar extends React.Component {
   }
 
   handleUserChange(event) {
-    console.log(this.props.currentUser);
-
     this.setState({
       username: event.target.value,
     });
@@ -39,11 +37,9 @@ class ChatBar extends React.Component {
     }
   }
 
-
   render() {
     return (
       <footer>
-
         <input
           id="username"
           type="text"
@@ -51,6 +47,7 @@ class ChatBar extends React.Component {
           value={this.state.username}
           onChange={this.handleUserChange}
           onKeyUp={this.handleUserEnter}
+          style={{ backgroundColor: this.props.color }}
         />
 
         <input
@@ -67,5 +64,12 @@ class ChatBar extends React.Component {
   }
 
 }
+
+ChatBar.propTypes = {
+  currentUser: React.PropTypes.node,
+  // addMessage: React.PropTypes.node,
+  // updateCurrentUser: React.PropTypes.node,
+  color: React.PropTypes.node,
+};
 
 export default ChatBar;
